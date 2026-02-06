@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="Iron Log" />
+<meta name="theme-color" content="#0a0a0a" />
+<meta name="mobile-web-app-capable" content="yes" />
+<title>Iron Log</title>
+<link rel="manifest" href="manifest.json" />
+<link rel="apple-touch-icon" href="icon-192.png" />
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800;900&family=Barlow:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body,#root{height:100%;width:100%;background:#0a0a0a;overflow-x:hidden}
+body{font-family:'Barlow',sans-serif;color:#e0e0e0;-webkit-font-smoothing:antialiased}
+input{-webkit-appearance:none;appearance:none}
+input:focus{outline:none}
+button{-webkit-appearance:none;appearance:none}
+::-webkit-scrollbar{display:none}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js"></script>
+<script type="text/babel">
+const { useState, useEffect, useCallback, useRef } = React;
+
+// ============ DATA ============
+const SESSIONS = {
+  A: {
+    id: "A",
+    title: "SESSION A",
+    subtitle: "QUAD / ANTERIOR-CHAIN DOMINANT",
+    duration: "45–55 min",
+    phases: [
+      {
+        name: "PHASE 1 — KNEE PREP",
+        time: "8–10 min",
+        exercises: [
+          { id: "A-A1", name: "Backward Sled Walk", sets: 3, reps: "30 steps/leg", rest: "—", tempo: "Continuous", note: "Light load. Land on balls of feet, upright torso, knees over toes." },
+          { id: "A-A2", name: "Wall Tibialis Raises", sets: 3, reps: "20", rest: "30", tempo: "2-0-1-0", note: "Back against wall, feet 12–18\" out. Pull toes toward shins without bending knees." },
+          { id: "A-A3", name: "BW ATG Split Squat Hold", sets: 2, reps: "20s hold/leg", rest: "30", tempo: "Isometric", note: "Front foot elevated 2–3\". Deep split squat, knee well past toes, heel down." },
+        ],
+      },
+      {
+        name: "PHASE 2 — QUAD HYPERTROPHY",
+        time: "20–25 min",
+        exercises: [
+          { id: "A-B1", name: "Heel-Elevated DB Goblet Squat", sets: 3, reps: "10–12", rest: "90", tempo: "3-1-1-0", note: "Heels on plates. DB at chest. Deep descent, upright torso." },
+          { id: "A-B2", name: "Belt Squat Machine", sets: 3, reps: "10–12", rest: "90", tempo: "3-0-1-0", note: "Belt at hips. Zero spinal compression. Full depth, don't lock out at top." },
+          { id: "A-C1", name: "DB Reverse Lunge to Knee Drive", sets: 3, reps: "8–10/leg", rest: "60", tempo: "2-0-1-1", note: "Step back into lunge, explosively drive knee to hip height, pause 1s at top." },
+          { id: "A-D1", name: "Cable Somersault Squat", sets: 3, reps: "10–12", rest: "60", tempo: "3-1-1-0", note: "EZ bar behind knees on low cable, stand on plate, DB on quads. Deep squat with constant tension." },
+        ],
+      },
+      {
+        name: "PHASE 3 — ROTATION & CORE",
+        time: "8–10 min",
+        exercises: [
+          { id: "A-E1", name: "Iso Lunge Pallof Press + Rotation", sets: 3, reps: "8–10/side", rest: "45", tempo: "2-1-2-1", note: "Split stance, hold moderate lunge. Press out, rotate 30–45° away from cable, return." },
+          { id: "A-E2", name: "Landmine Rot. Squat-to-Press", sets: 3, reps: "8/side", rest: "45", tempo: "Controlled", note: "Bar at shoulder, squat, rotate and press diagonally across body as you stand." },
+        ],
+      },
+      {
+        name: "PHASE 4 — KNEE HEALTH FINISHER",
+        time: "5 min",
+        superset: "Superset F1 & F2 · 60s rest after pair",
+        exercises: [
+          { id: "A-F1", name: "Petersen Step-Up", sets: 2, reps: "12–15/leg", rest: "—", tempo: "2-0-1-0", note: "6–8\" step. Rise onto ball of foot extending through knee. Isolates VMO." },
+          { id: "A-F2", name: "KOT Calf Raise (bent knee)", sets: 2, reps: "15–20", rest: "60", tempo: "2-1-2-0", note: "Knees bent 20–30°. Rise onto toes, lower heels below step. Targets soleus." },
+        ],
+      },
+    ],
+  },
+  B: {
+    id: "B",
+    title: "SESSION B",
+    subtitle: "HAMSTRING / POSTERIOR-CHAIN DOMINANT",
+    duration: "45–55 min",
+    phases: [
+      {
+        name: "PHASE 1 — KNEE PREP",
+        time: "8–10 min",
+        exercises: [
+          { id: "B-A1", name: "Backward Sled Walk", sets: 3, reps: "30 steps/leg", rest: "—", tempo: "Continuous", note: "Same as Session A. Non-negotiable knee prep." },
+          { id: "B-A2", name: "Wall Tibialis Raises", sets: 2, reps: "20", rest: "30", tempo: "2-0-1-0", note: "Same as Session A." },
+          { id: "B-A3", name: "Banded Lateral Walk + Hip Hinge", sets: 2, reps: "10 steps/dir", rest: "30", tempo: "Controlled", note: "Mini band above knees. Quarter-squat lateral walk 10 steps, hip hinge 2s hold, walk back." },
+        ],
+      },
+      {
+        name: "PHASE 2 — POSTERIOR HYPERTROPHY",
+        time: "20–25 min",
+        exercises: [
+          { id: "B-B1", name: "DB Staggered-Stance RDL", sets: 3, reps: "8–10/leg", rest: "60", tempo: "3-1-1-0", note: "DB in each hand. Back foot toes only, 12\" behind. Hinge to mid-shin. 1s pause at bottom." },
+          { id: "B-B2", name: "Leg Curl (Drop Set final)", sets: 3, reps: "10–12", rest: "75", tempo: "3-1-1-0", note: "Pad above Achilles. 3s eccentric. Final set: working weight → fail → drop 25–30% → fail." },
+          { id: "B-C1", name: "KB Goblet Lateral Lunge", sets: 3, reps: "8–10/leg", rest: "60", tempo: "2-1-1-0", note: "KB at chest. Large step to side, sit hips back into stepping leg, opposite leg straight." },
+          { id: "B-C2", name: "Leg Press (feet high & wide)", sets: 3, reps: "10–12", rest: "90", tempo: "3-0-1-0", note: "Feet high on platform, wider than shoulders, toes out 15–20°. Drive through heels." },
+        ],
+      },
+      {
+        name: "PHASE 3 — ROTATIONAL POWER",
+        time: "8–10 min",
+        exercises: [
+          { id: "B-D1", name: "Cable Low-to-High Rot. Chop", sets: 3, reps: "10–12/side", rest: "45", tempo: "Explosive / 2s down", note: "Cable at lowest. Athletic stance perpendicular. Rotate from low hip to above opposite shoulder." },
+          { id: "B-D2", name: "SL KB DL to Rotational Row", sets: 3, reps: "8/leg", rest: "45", tempo: "Controlled", note: "Single-leg RDL to parallel, row KB to hip while rotating thoracic spine open." },
+        ],
+      },
+      {
+        name: "PHASE 4 — CALF FINISHER",
+        time: "5–7 min",
+        superset: "Tri-set E1/E2/E3 · 60s rest after trio",
+        exercises: [
+          { id: "B-E1", name: "DB Walking Lunge (long stride)", sets: 2, reps: "10/leg", rest: "—", tempo: "2-0-1-0", note: "Exaggerated stride for glute/ham emphasis. Drive through heel." },
+          { id: "B-E2", name: "Standing Calf Raise (straight)", sets: 2, reps: "12–15", rest: "—", tempo: "2-2-2-0", note: "Knees locked. 2s up, 2s hold peak, 2s down below step." },
+          { id: "B-E3", name: "Seated / KOT Calf Raise", sets: 2, reps: "15–20", rest: "60", tempo: "2-1-2-0", note: "Bent-knee for soleus isolation." },
+        ],
+      },
+    ],
+  },
+};
+
+// ============ LOCAL STORAGE ============
+const storage = {
+  get(key) { try { const v = localStorage.getItem(key); return v ? JSON.parse(v) : null; } catch { return null; } },
+  set(key, val) { try { localStorage.setItem(key, JSON.stringify(val)); } catch {} },
+  remove(key) { try { localStorage.removeItem(key); } catch {} },
+};
+
+// ============ TIMER ============
+function RestTimer({ seconds, onComplete }) {
+  const [remaining, setRemaining] = useState(seconds);
+  const intervalRef = useRef(null);
+
+  useEffect(() => {
+    setRemaining(seconds);
+    intervalRef.current = setInterval(() => {
+      setRemaining(prev => {
+        if (prev <= 1) { clearInterval(intervalRef.current); onComplete?.(); return 0; }
+        return prev - 1;
+      });
+    }, 1000);
+    return () => clearInterval(intervalRef.current);
+  }, [seconds]);
+
+  const pct = ((seconds - remaining) / seconds) * 100;
+  const mins = Math.floor(remaining / 60);
+  const secs = remaining % 60;
+
+  return (
+    <div style={{
+      background: "linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%)",
+      border: "1px solid #D4AF37", borderRadius: 8, padding: "12px 16px", marginTop: 8,
+      display: "flex", alignItems: "center", gap: 12,
+    }}>
+      <div style={{ position: "relative", width: 40, height: 40, flexShrink: 0 }}>
+        <svg width="40" height="40" viewBox="0 0 40 40">
+          <circle cx="20" cy="20" r="17" fill="none" stroke="#222" strokeWidth="3" />
+          <circle cx="20" cy="20" r="17" fill="none" stroke="#D4AF37" strokeWidth="3"
+            strokeDasharray={`${(pct / 100) * 106.8} 106.8`}
+            strokeLinecap="round" transform="rotate(-90 20 20)"
+            style={{ transition: "stroke-dasharray 0.3s ease" }} />
+        </svg>
+        <div style={{
+          position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center",
+          fontSize: 10, fontWeight: 700, color: remaining === 0 ? "#4CAF50" : "#D4AF37",
+          fontFamily: "'JetBrains Mono', monospace",
+        }}>{remaining === 0 ? "✓" : `${mins}:${secs.toString().padStart(2, "0")}`}</div>
+      </div>
+      <div style={{ flex: 1 }}>
+        <div style={{ height: 4, background: "#222", borderRadius: 2, overflow: "hidden" }}>
+          <div style={{
+            height: "100%", width: `${pct}%`, borderRadius: 2,
+            background: remaining === 0 ? "#4CAF50" : "linear-gradient(90deg, #D4AF37, #F4E076)",
+            transition: "width 0.3s ease",
+          }} />
+        </div>
+      </div>
+      <button onClick={() => { clearInterval(intervalRef.current); onComplete?.(); }} style={{
+        background: "none", border: "1px solid #444", borderRadius: 4, color: "#888",
+        fontSize: 10, padding: "4px 8px", cursor: "pointer", fontFamily: "'JetBrains Mono', monospace",
+      }}>SKIP</button>
+    </div>
+  );
+}
+
+// ============ SET ROW ============
+function SetRow({ setNum, data, onChange, restSeconds }) {
+  const [showTimer, setShowTimer] = useState(false);
+  const canTime = restSeconds && restSeconds !== "—" && !isNaN(parseInt(restSeconds));
+
+  return (
+    <div>
+      <div style={{
+        display: "grid", gridTemplateColumns: "32px 1fr 1fr 40px", gap: 6, alignItems: "center",
+        padding: "6px 0", borderBottom: "1px solid #1a1a1a",
+      }}>
+        <div style={{
+          width: 26, height: 26, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center",
+          fontSize: 11, fontWeight: 800, fontFamily: "'JetBrains Mono', monospace",
+          background: data.done ? "linear-gradient(135deg, #D4AF37, #F4E076)" : "#1a1a1a",
+          color: data.done ? "#0a0a0a" : "#555",
+          border: data.done ? "none" : "1px solid #333",
+        }}>{setNum}</div>
+        <input type="text" inputMode="decimal" placeholder="lbs"
+          value={data.weight || ""}
+          onChange={e => onChange({ ...data, weight: e.target.value })}
+          style={{
+            background: "#111", border: "1px solid #2a2a2a", borderRadius: 6, padding: "8px 10px",
+            color: "#e0e0e0", fontSize: 14, fontFamily: "'JetBrains Mono', monospace",
+            textAlign: "center", width: "100%", boxSizing: "border-box",
+          }}
+          onFocus={e => e.target.style.borderColor = "#D4AF37"}
+          onBlur={e => e.target.style.borderColor = "#2a2a2a"}
+        />
+        <input type="text" inputMode="text" placeholder="reps"
+          value={data.reps || ""}
+          onChange={e => onChange({ ...data, reps: e.target.value })}
+          style={{
+            background: "#111", border: "1px solid #2a2a2a", borderRadius: 6, padding: "8px 10px",
+            color: "#e0e0e0", fontSize: 14, fontFamily: "'JetBrains Mono', monospace",
+            textAlign: "center", width: "100%", boxSizing: "border-box",
+          }}
+          onFocus={e => e.target.style.borderColor = "#D4AF37"}
+          onBlur={e => e.target.style.borderColor = "#2a2a2a"}
+        />
+        <button onClick={() => {
+          const newDone = !data.done;
+          onChange({ ...data, done: newDone });
+          if (newDone && canTime) setShowTimer(true);
+        }} style={{
+          width: 32, height: 32, borderRadius: 6, border: "none", cursor: "pointer",
+          background: data.done ? "#D4AF37" : "#1a1a1a", color: data.done ? "#0a0a0a" : "#444",
+          fontSize: 16, display: "flex", alignItems: "center", justifyContent: "center",
+        }}>✓</button>
+      </div>
+      {showTimer && canTime && (
+        <RestTimer seconds={parseInt(restSeconds)} onComplete={() => setShowTimer(false)} />
+      )}
+    </div>
+  );
+}
+
+// ============ EXERCISE CARD ============
+function ExerciseCard({ exercise, logData, onUpdateLog }) {
+  const [expanded, setExpanded] = useState(false);
+  const sets = logData?.sets || Array.from({ length: exercise.sets }, () => ({ weight: "", reps: "", done: false }));
+  const completedSets = sets.filter(s => s.done).length;
+  const allDone = completedSets === exercise.sets;
+
+  const updateSet = (idx, newData) => {
+    const newSets = [...sets];
+    newSets[idx] = newData;
+    onUpdateLog({ sets: newSets });
+  };
+
+  // Get display ID (strip session prefix)
+  const displayId = exercise.id.split("-").slice(1).join("-");
+
+  return (
+    <div style={{
+      background: allDone ? "linear-gradient(135deg, #0d1a0d 0%, #111 100%)" : "#111",
+      borderRadius: 10, marginBottom: 8, overflow: "hidden",
+      border: allDone ? "1px solid #2d4a2d" : "1px solid #1a1a1a",
+      transition: "all 0.3s ease",
+    }}>
+      <div onClick={() => setExpanded(!expanded)} style={{
+        padding: "14px 16px", cursor: "pointer", display: "flex", alignItems: "center", gap: 12,
+        userSelect: "none",
+      }}>
+        <div style={{
+          minWidth: 36, height: 36, borderRadius: 6, display: "flex", alignItems: "center", justifyContent: "center",
+          background: allDone ? "linear-gradient(135deg, #D4AF37, #F4E076)" : "linear-gradient(135deg, #1a1a1a, #222)",
+          color: allDone ? "#0a0a0a" : "#D4AF37",
+          fontSize: 12, fontWeight: 900, fontFamily: "'JetBrains Mono', monospace",
+          border: allDone ? "none" : "1px solid #333", letterSpacing: -0.5,
+        }}>{displayId}</div>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div style={{
+            color: allDone ? "#D4AF37" : "#e0e0e0", fontSize: 14, fontWeight: 700,
+            fontFamily: "'Barlow Condensed', sans-serif", letterSpacing: 0.3,
+            whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis",
+          }}>{exercise.name}</div>
+          <div style={{
+            color: "#666", fontSize: 11, fontFamily: "'JetBrains Mono', monospace", marginTop: 2,
+          }}>{exercise.sets}×{exercise.reps} · {exercise.rest === "—" ? "no rest" : exercise.rest + "s"} · {exercise.tempo}</div>
+        </div>
+        <div style={{ display: "flex", alignItems: "center", gap: 6, flexShrink: 0 }}>
+          <div style={{
+            fontSize: 10, fontWeight: 700, color: allDone ? "#4CAF50" : "#666",
+            fontFamily: "'JetBrains Mono', monospace",
+          }}>{completedSets}/{exercise.sets}</div>
+          <div style={{
+            color: "#555", fontSize: 12, transform: expanded ? "rotate(180deg)" : "rotate(0deg)",
+            transition: "transform 0.2s ease",
+          }}>▼</div>
+        </div>
+      </div>
+      {expanded && (
+        <div style={{ padding: "0 16px 14px", borderTop: "1px solid #1a1a1a" }}>
+          <div style={{
+            background: "#0a0a0a", borderRadius: 6, padding: "8px 10px", marginTop: 10, marginBottom: 10,
+            fontSize: 11, color: "#888", lineHeight: 1.5, fontFamily: "'Barlow', sans-serif",
+            borderLeft: "2px solid #D4AF37",
+          }}>{exercise.note}</div>
+          <div style={{ display: "grid", gridTemplateColumns: "32px 1fr 1fr 40px", gap: 6, padding: "0 0 6px" }}>
+            <div style={{ fontSize: 9, color: "#444", fontFamily: "'JetBrains Mono', monospace", textAlign: "center" }}>SET</div>
+            <div style={{ fontSize: 9, color: "#444", fontFamily: "'JetBrains Mono', monospace", textAlign: "center" }}>WEIGHT</div>
+            <div style={{ fontSize: 9, color: "#444", fontFamily: "'JetBrains Mono', monospace", textAlign: "center" }}>REPS</div>
+            <div />
+          </div>
+          {sets.map((s, i) => (
+            <SetRow key={i} setNum={i + 1} data={s} onChange={d => updateSet(i, d)} restSeconds={exercise.rest} />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ============ MAIN APP ============
+function App() {
+  const [activeSession, setActiveSession] = useState(() => storage.get("active_session"));
+  const [logs, setLogs] = useState(() => storage.get("workout_logs") || {});
+  const [workoutStartTime, setWorkoutStartTime] = useState(() => storage.get("workout_timer"));
+  const [elapsed, setElapsed] = useState(0);
+  const [history, setHistory] = useState(() => storage.get("workout_history") || []);
+  const [showHistory, setShowHistory] = useState(false);
+  const [showConfirmClear, setShowConfirmClear] = useState(false);
+
+  // Timer tick
+  useEffect(() => {
+    if (!workoutStartTime) return;
+    setElapsed(Math.floor((Date.now() - workoutStartTime) / 1000));
+    const tick = setInterval(() => {
+      setElapsed(Math.floor((Date.now() - workoutStartTime) / 1000));
+    }, 1000);
+    return () => clearInterval(tick);
+  }, [workoutStartTime]);
+
+  const persistLogs = useCallback((newLogs) => { storage.set("workout_logs", newLogs); }, []);
+
+  const startSession = (id) => {
+    setActiveSession(id);
+    const now = Date.now();
+    setWorkoutStartTime(now);
+    setElapsed(0);
+    storage.set("active_session", id);
+    storage.set("workout_timer", now);
+    if (!logs[id]) {
+      const newLogs = { ...logs, [id]: {} };
+      setLogs(newLogs);
+      persistLogs(newLogs);
+    }
+  };
+
+  const updateExerciseLog = (sessionId, exerciseId, data) => {
+    const newLogs = { ...logs, [sessionId]: { ...(logs[sessionId] || {}), [exerciseId]: data } };
+    setLogs(newLogs);
+    persistLogs(newLogs);
+  };
+
+  const finishWorkout = () => {
+    if (!activeSession) return;
+    const session = SESSIONS[activeSession];
+    const sessionLog = logs[activeSession] || {};
+    let totalSets = 0, completedSets = 0;
+    session.phases.forEach(p => p.exercises.forEach(ex => {
+      totalSets += ex.sets;
+      const exLog = sessionLog[ex.id];
+      if (exLog?.sets) completedSets += exLog.sets.filter(s => s.done).length;
+    }));
+    const entry = {
+      id: Date.now().toString(36),
+      session: activeSession, title: session.title,
+      date: new Date().toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" }),
+      duration: formatTime(elapsed), completedSets, totalSets,
+    };
+    const newHistory = [entry, ...history].slice(0, 50);
+    setHistory(newHistory);
+    storage.set("workout_history", newHistory);
+    const newLogs = { ...logs };
+    delete newLogs[activeSession];
+    setLogs(newLogs);
+    persistLogs(newLogs);
+    setActiveSession(null);
+    setWorkoutStartTime(null);
+    setElapsed(0);
+    storage.remove("active_session");
+    storage.remove("workout_timer");
+  };
+
+  const clearCurrentSession = () => {
+    const newLogs = { ...logs };
+    delete newLogs[activeSession];
+    setLogs(newLogs);
+    persistLogs(newLogs);
+    setActiveSession(null);
+    setWorkoutStartTime(null);
+    setElapsed(0);
+    setShowConfirmClear(false);
+    storage.remove("active_session");
+    storage.remove("workout_timer");
+  };
+
+  const formatTime = (s) => {
+    const m = Math.floor(s / 60);
+    const sec = s % 60;
+    return `${m}:${sec.toString().padStart(2, "0")}`;
+  };
+
+  const session = activeSession ? SESSIONS[activeSession] : null;
+  let totalEx = 0, doneEx = 0;
+  if (session) {
+    session.phases.forEach(p => p.exercises.forEach(ex => {
+      totalEx += ex.sets;
+      const exLog = logs[activeSession]?.[ex.id];
+      if (exLog?.sets) doneEx += exLog.sets.filter(s => s.done).length;
+    }));
+  }
+  const progressPct = totalEx > 0 ? (doneEx / totalEx) * 100 : 0;
+
+  // ============ HOME SCREEN ============
+  if (!activeSession) {
+    return (
+      <div style={{ minHeight: "100vh", background: "#0a0a0a", display: "flex", flexDirection: "column" }}>
+        <div style={{
+          padding: "50px 20px 24px", textAlign: "center",
+          background: "linear-gradient(180deg, #111 0%, #0a0a0a 100%)",
+          borderBottom: "1px solid #1a1a1a",
+        }}>
+          <div style={{
+            fontSize: 11, fontWeight: 800, letterSpacing: 6, color: "#D4AF37",
+            fontFamily: "'JetBrains Mono', monospace", marginBottom: 8,
+          }}>LOWER BODY</div>
+          <div style={{
+            fontSize: 32, fontWeight: 900, letterSpacing: -1,
+            fontFamily: "'Barlow Condensed', sans-serif",
+            background: "linear-gradient(135deg, #e0e0e0 0%, #888 100%)",
+            WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent",
+          }}>TRAINING LOG</div>
+          <div style={{
+            width: 40, height: 2, background: "linear-gradient(90deg, transparent, #D4AF37, transparent)",
+            margin: "12px auto 0",
+          }} />
+        </div>
+
+        <div style={{ padding: 20, flex: 1 }}>
+          {["A", "B"].map(id => {
+            const s = SESSIONS[id];
+            const exCount = s.phases.reduce((a, p) => a + p.exercises.length, 0);
+            return (
+              <div key={id} onClick={() => startSession(id)} style={{
+                background: "linear-gradient(135deg, #111 0%, #161616 100%)",
+                border: "1px solid #222", borderRadius: 12, padding: 24, marginBottom: 16,
+                cursor: "pointer", position: "relative", overflow: "hidden",
+              }}>
+                <div style={{
+                  position: "absolute", top: 16, right: 16, fontSize: 48, fontWeight: 900,
+                  fontFamily: "'Barlow Condensed', sans-serif", color: "#1a1a1a", lineHeight: 1,
+                }}>{id}</div>
+                <div style={{
+                  fontSize: 10, fontWeight: 800, letterSpacing: 4, color: "#D4AF37",
+                  fontFamily: "'JetBrains Mono', monospace", marginBottom: 8,
+                }}>{s.title}</div>
+                <div style={{
+                  fontSize: 20, fontWeight: 800, fontFamily: "'Barlow Condensed', sans-serif",
+                  color: "#e0e0e0", marginBottom: 4,
+                }}>{s.subtitle}</div>
+                <div style={{
+                  fontSize: 12, color: "#666", fontFamily: "'JetBrains Mono', monospace", marginTop: 8,
+                }}>{exCount} exercises · {s.duration} · {s.phases.length} phases</div>
+                <div style={{ marginTop: 14 }}>
+                  <div style={{
+                    display: "inline-block",
+                    background: "linear-gradient(135deg, #D4AF37, #F4E076)",
+                    color: "#0a0a0a", fontSize: 11, fontWeight: 800,
+                    fontFamily: "'JetBrains Mono', monospace",
+                    padding: "6px 14px", borderRadius: 4, letterSpacing: 1,
+                  }}>START →</div>
+                </div>
+              </div>
+            );
+          })}
+
+          {history.length > 0 && (
+            <div style={{ marginTop: 24 }}>
+              <div onClick={() => setShowHistory(!showHistory)} style={{
+                display: "flex", alignItems: "center", justifyContent: "space-between",
+                cursor: "pointer", padding: "8px 0", marginBottom: 8,
+              }}>
+                <div style={{
+                  fontSize: 11, fontWeight: 800, letterSpacing: 4, color: "#555",
+                  fontFamily: "'JetBrains Mono', monospace",
+                }}>HISTORY ({history.length})</div>
+                <div style={{
+                  color: "#555", fontSize: 12,
+                  transform: showHistory ? "rotate(180deg)" : "rotate(0deg)",
+                  transition: "transform 0.2s ease",
+                }}>▼</div>
+              </div>
+              {showHistory && history.map(h => (
+                <div key={h.id} style={{
+                  background: "#111", border: "1px solid #1a1a1a", borderRadius: 8,
+                  padding: "12px 14px", marginBottom: 6,
+                  display: "flex", alignItems: "center", justifyContent: "space-between",
+                }}>
+                  <div>
+                    <div style={{
+                      fontSize: 13, fontWeight: 700, color: "#ccc",
+                      fontFamily: "'Barlow Condensed', sans-serif",
+                    }}>{h.title} — {h.date}</div>
+                    <div style={{
+                      fontSize: 11, color: "#555", fontFamily: "'JetBrains Mono', monospace", marginTop: 2,
+                    }}>{h.completedSets}/{h.totalSets} sets · {h.duration}</div>
+                  </div>
+                  <div style={{
+                    fontSize: 11, fontWeight: 700,
+                    color: h.completedSets === h.totalSets ? "#4CAF50" : "#D4AF37",
+                    fontFamily: "'JetBrains Mono', monospace",
+                  }}>{Math.round((h.completedSets / h.totalSets) * 100)}%</div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  // ============ ACTIVE WORKOUT ============
+  return (
+    <div style={{ minHeight: "100vh", background: "#0a0a0a", paddingBottom: 100 }}>
+      {/* Sticky Header */}
+      <div style={{
+        position: "sticky", top: 0, zIndex: 100,
+        background: "rgba(10,10,10,0.95)", backdropFilter: "blur(12px)",
+        borderBottom: "1px solid #1a1a1a", padding: "12px 16px",
+        paddingTop: "max(12px, env(safe-area-inset-top))",
+      }}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 8 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+            <button onClick={() => setShowConfirmClear(true)} style={{
+              background: "none", border: "1px solid #333", borderRadius: 6, color: "#666",
+              fontSize: 11, padding: "4px 10px", cursor: "pointer",
+              fontFamily: "'JetBrains Mono', monospace",
+            }}>←</button>
+            <div>
+              <div style={{
+                fontSize: 10, fontWeight: 800, letterSpacing: 3, color: "#D4AF37",
+                fontFamily: "'JetBrains Mono', monospace",
+              }}>{session.title}</div>
+              <div style={{
+                fontSize: 13, fontWeight: 700, fontFamily: "'Barlow Condensed', sans-serif", color: "#999",
+              }}>{session.subtitle}</div>
+            </div>
+          </div>
+          <div style={{
+            fontSize: 18, fontWeight: 800, color: "#e0e0e0",
+            fontFamily: "'JetBrains Mono', monospace",
+          }}>{formatTime(elapsed)}</div>
+        </div>
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <div style={{ flex: 1, height: 3, background: "#1a1a1a", borderRadius: 2, overflow: "hidden" }}>
+            <div style={{
+              height: "100%", width: `${progressPct}%`, borderRadius: 2,
+              background: progressPct >= 100 ? "#4CAF50" : "linear-gradient(90deg, #D4AF37, #F4E076)",
+              transition: "width 0.5s ease",
+            }} />
+          </div>
+          <div style={{
+            fontSize: 10, fontWeight: 700, color: progressPct >= 100 ? "#4CAF50" : "#666",
+            fontFamily: "'JetBrains Mono', monospace", minWidth: 40, textAlign: "right",
+          }}>{doneEx}/{totalEx}</div>
+        </div>
+      </div>
+
+      {/* Confirm modal */}
+      {showConfirmClear && (
+        <div style={{
+          position: "fixed", inset: 0, zIndex: 200,
+          background: "rgba(0,0,0,0.8)", display: "flex", alignItems: "center",
+          justifyContent: "center", padding: 20,
+        }}>
+          <div style={{
+            background: "#111", border: "1px solid #333", borderRadius: 12, padding: 24,
+            maxWidth: 320, width: "100%", textAlign: "center",
+          }}>
+            <div style={{
+              fontSize: 16, fontWeight: 800, fontFamily: "'Barlow Condensed', sans-serif",
+              marginBottom: 8, color: "#e0e0e0",
+            }}>LEAVE WORKOUT?</div>
+            <div style={{
+              fontSize: 12, color: "#888", marginBottom: 20, fontFamily: "'Barlow', sans-serif",
+            }}>Your current progress will be lost.</div>
+            <div style={{ display: "flex", gap: 10 }}>
+              <button onClick={() => setShowConfirmClear(false)} style={{
+                flex: 1, padding: "10px 0", borderRadius: 6, border: "1px solid #333",
+                background: "none", color: "#999", fontSize: 12, fontWeight: 700,
+                cursor: "pointer", fontFamily: "'JetBrains Mono', monospace",
+              }}>CANCEL</button>
+              <button onClick={clearCurrentSession} style={{
+                flex: 1, padding: "10px 0", borderRadius: 6, border: "none",
+                background: "#c0392b", color: "#fff", fontSize: 12, fontWeight: 700,
+                cursor: "pointer", fontFamily: "'JetBrains Mono', monospace",
+              }}>LEAVE</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Phases */}
+      <div style={{ padding: "16px 12px" }}>
+        {session.phases.map((phase, pi) => (
+          <div key={pi} style={{ marginBottom: 20 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10, padding: "0 4px" }}>
+              <div style={{ height: 1, flex: 1, background: "linear-gradient(90deg, #D4AF37, transparent)" }} />
+              <div style={{
+                fontSize: 9, fontWeight: 800, letterSpacing: 2, color: "#D4AF37",
+                fontFamily: "'JetBrains Mono', monospace", whiteSpace: "nowrap", flexShrink: 0,
+                textAlign: "center",
+              }}>{phase.name}</div>
+              <div style={{ height: 1, flex: 1, background: "linear-gradient(90deg, transparent, #D4AF37)" }} />
+            </div>
+            <div style={{
+              fontSize: 10, color: "#555", fontFamily: "'JetBrains Mono', monospace",
+              textAlign: "center", marginBottom: 8,
+            }}>{phase.time}{phase.superset ? ` · ${phase.superset}` : ""}</div>
+            {phase.exercises.map(ex => (
+              <ExerciseCard key={ex.id} exercise={ex}
+                logData={logs[activeSession]?.[ex.id]}
+                onUpdateLog={data => updateExerciseLog(activeSession, ex.id, data)}
+              />
+            ))}
+          </div>
+        ))}
+      </div>
+
+      {/* Finish button */}
+      <div style={{
+        position: "fixed", bottom: 0, left: 0, right: 0,
+        padding: "12px 16px", paddingBottom: "max(24px, env(safe-area-inset-bottom))",
+        background: "linear-gradient(180deg, rgba(10,10,10,0) 0%, #0a0a0a 30%)", zIndex: 100,
+      }}>
+        <button onClick={finishWorkout} style={{
+          width: "100%", padding: "14px 0", borderRadius: 8, border: "none",
+          background: progressPct >= 100
+            ? "linear-gradient(135deg, #4CAF50, #66BB6A)"
+            : "linear-gradient(135deg, #D4AF37, #F4E076)",
+          color: "#0a0a0a", fontSize: 14, fontWeight: 900,
+          fontFamily: "'Barlow Condensed', sans-serif", letterSpacing: 2, cursor: "pointer",
+          boxShadow: "0 -4px 20px rgba(212, 175, 55, 0.2)",
+        }}>{progressPct >= 100 ? "WORKOUT COMPLETE ✓" : "FINISH WORKOUT"}</button>
+      </div>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+</script>
+<script>
+// Register Service Worker for offline PWA
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js').catch(() => {});
+}
+</script>
+</body>
+</html>
