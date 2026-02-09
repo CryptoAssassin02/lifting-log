@@ -49,29 +49,27 @@ const SESSIONS = {
       },
       {
         name: "PHASE 2 — QUAD HYPERTROPHY",
-        time: "20–25 min",
+        time: "15–20 min",
         exercises: [
-          { id: "A-B1", name: "Heel-Elevated DB Goblet Squat", sets: 3, reps: "10–12", rest: "90", tempo: "3-1-1-0", note: "Heels on plates. DB at chest. Deep descent, upright torso." },
-          { id: "A-B2", name: "Belt Squat Machine", sets: 3, reps: "10–12", rest: "90", tempo: "3-0-1-0", note: "Belt at hips. Zero spinal compression. Full depth, don't lock out at top." },
-          { id: "A-C1", name: "DB Reverse Lunge to Knee Drive", sets: 3, reps: "8–10/leg", rest: "60", tempo: "2-0-1-1", note: "Step back into lunge, explosively drive knee to hip height, pause 1s at top." },
-          { id: "A-D1", name: "Cable Somersault Squat", sets: 3, reps: "10–12", rest: "60", tempo: "3-1-1-0", note: "EZ bar behind knees on low cable, stand on plate, DB on quads. Deep squat with constant tension." },
+          { id: "A-B1", name: "Belt Squat Machine", sets: 3, reps: "10–12", rest: "90", tempo: "3-1-1-0", note: "Belt at hips. Zero spinal compression. Primary overload vehicle — push weight here. Don't lock out at top." },
+          { id: "A-B2", name: "DB Reverse Lunge to Knee Drive", sets: 3, reps: "8–10/leg", rest: "60", tempo: "2-0-1-1", note: "Step back into lunge, explosively drive knee to hip height, pause 1s at top." },
+          { id: "A-C1", name: "Cable Somersault Squat", sets: 3, reps: "10–12", rest: "60", tempo: "3-1-1-0", note: "EZ bar behind knees on low cable, stand on plate, DB on quads. Deep squat with constant tension." },
         ],
       },
       {
         name: "PHASE 3 — ROTATION & CORE",
-        time: "8–10 min",
+        time: "5 min",
         exercises: [
-          { id: "A-E1", name: "Iso Lunge Pallof Press + Rotation", sets: 3, reps: "8–10/side", rest: "45", tempo: "2-1-2-1", note: "Split stance, hold moderate lunge. Press out, rotate 30–45° away from cable, return." },
-          { id: "A-E2", name: "Landmine Rot. Squat-to-Press", sets: 3, reps: "8/side", rest: "45", tempo: "Controlled", note: "Bar at shoulder, squat, rotate and press diagonally across body as you stand." },
+          { id: "A-D1", name: "Iso Lunge Pallof Press + Rotation", sets: 3, reps: "8–10/side", rest: "45", tempo: "2-1-2-1", note: "Split stance, hold moderate lunge. Press out, rotate 30–45° away from cable, return." },
         ],
       },
       {
         name: "PHASE 4 — KNEE HEALTH FINISHER",
         time: "5 min",
-        superset: "Superset F1 & F2 · 60s rest after pair",
+        superset: "Superset E1 & E2 · 60s rest after pair",
         exercises: [
-          { id: "A-F1", name: "Petersen Step-Up", sets: 2, reps: "12–15/leg", rest: "—", tempo: "2-0-1-0", note: "6–8\" step. Rise onto ball of foot extending through knee. Isolates VMO." },
-          { id: "A-F2", name: "KOT Calf Raise (bent knee)", sets: 2, reps: "15–20", rest: "60", tempo: "2-1-2-0", note: "Knees bent 20–30°. Rise onto toes, lower heels below step. Targets soleus." },
+          { id: "A-E1", name: "Petersen Step-Up", sets: 2, reps: "12–15/leg", rest: "—", tempo: "2-0-1-0", note: "6–8\" step. Rise onto ball of foot extending through knee. Isolates VMO." },
+          { id: "A-E2", name: "KOT Calf Raise (bent knee)", sets: 2, reps: "15–20", rest: "60", tempo: "2-1-2-0", note: "Knees bent 20–30°. Rise onto toes, lower heels below step. Targets soleus." },
         ],
       },
     ],
@@ -84,21 +82,19 @@ const SESSIONS = {
     phases: [
       {
         name: "PHASE 1 — KNEE PREP",
-        time: "8–10 min",
+        time: "6–8 min",
         exercises: [
           { id: "B-A1", name: "Backward Sled Walk", sets: 3, reps: "30 steps/leg", rest: "—", tempo: "Continuous", note: "Same as Session A. Non-negotiable knee prep." },
           { id: "B-A2", name: "Wall Tibialis Raises", sets: 2, reps: "20", rest: "30", tempo: "2-0-1-0", note: "Same as Session A." },
-          { id: "B-A3", name: "Banded Lateral Walk + Hip Hinge", sets: 2, reps: "10 steps/dir", rest: "30", tempo: "Controlled", note: "Mini band above knees. Quarter-squat lateral walk 10 steps, hip hinge 2s hold, walk back." },
         ],
       },
       {
         name: "PHASE 2 — POSTERIOR HYPERTROPHY",
-        time: "20–25 min",
+        time: "15–20 min",
         exercises: [
           { id: "B-B1", name: "DB Staggered-Stance RDL", sets: 3, reps: "8–10/leg", rest: "60", tempo: "3-1-1-0", note: "DB in each hand. Back foot toes only, 12\" behind. Hinge to mid-shin. 1s pause at bottom." },
           { id: "B-B2", name: "Leg Curl (Drop Set final)", sets: 3, reps: "10–12", rest: "75", tempo: "3-1-1-0", note: "Pad above Achilles. 3s eccentric. Final set: working weight → fail → drop 25–30% → fail." },
           { id: "B-C1", name: "KB Goblet Lateral Lunge", sets: 3, reps: "8–10/leg", rest: "60", tempo: "2-1-1-0", note: "KB at chest. Large step to side, sit hips back into stepping leg, opposite leg straight." },
-          { id: "B-C2", name: "Leg Press (feet high & wide)", sets: 3, reps: "10–12", rest: "90", tempo: "3-0-1-0", note: "Feet high on platform, wider than shoulders, toes out 15–20°. Drive through heels." },
         ],
       },
       {
@@ -111,12 +107,9 @@ const SESSIONS = {
       },
       {
         name: "PHASE 4 — CALF FINISHER",
-        time: "5–7 min",
-        superset: "Tri-set E1/E2/E3 · 60s rest after trio",
+        time: "5 min",
         exercises: [
-          { id: "B-E1", name: "DB Walking Lunge (long stride)", sets: 2, reps: "10/leg", rest: "—", tempo: "2-0-1-0", note: "Exaggerated stride for glute/ham emphasis. Drive through heel." },
-          { id: "B-E2", name: "Standing Calf Raise (straight)", sets: 2, reps: "12–15", rest: "—", tempo: "2-2-2-0", note: "Knees locked. 2s up, 2s hold peak, 2s down below step." },
-          { id: "B-E3", name: "Seated / KOT Calf Raise", sets: 2, reps: "15–20", rest: "60", tempo: "2-1-2-0", note: "Bent-knee for soleus isolation." },
+          { id: "B-E1", name: "KOT Calf Raise (bent knee)", sets: 3, reps: "15–20", rest: "45", tempo: "2-1-2-0", note: "Knees bent 20–30°. Rise onto toes, lower heels below step. Targets soleus for deceleration." },
         ],
       },
     ],
