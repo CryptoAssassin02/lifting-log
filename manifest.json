@@ -1,7 +1,7 @@
 {
-  "name": "Iron Log — Training Tracker",
+  "name": "Iron Log — PPL Training Tracker",
   "short_name": "Iron Log",
-  "description": "PPL workout tracker — Lower Body & Push sessions",
+  "description": "Full PPL workout tracker — Lower Body, Push & Pull sessions",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#0a0a0a",
