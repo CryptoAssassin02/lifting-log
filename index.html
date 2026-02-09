@@ -468,27 +468,27 @@ function ExerciseCard({ exercise, logData, onUpdateLog }) {
             }}>
               <span style={{
                 fontSize: 10, fontWeight: 700, fontFamily: "'JetBrains Mono', monospace",
-                color: "#555", minWidth: 18,
+                color: "#555", flexShrink: 0, width: 18,
               }}>S{i + 1}</span>
-              <input type="number" inputMode="decimal" placeholder="lbs" value={set.weight}
+              <input type="number" inputMode="decimal" step="0.5" placeholder="lbs" value={set.weight}
                 onChange={e => updateSet(i, "weight", e.target.value)}
                 style={{
-                  width: 60, background: "#0a0a0a", border: "1px solid #222", borderRadius: 6,
-                  color: "#e0e0e0", padding: "6px 8px", fontSize: 13,
+                  flex: 1, minWidth: 0, background: "#0a0a0a", border: "1px solid #222", borderRadius: 6,
+                  color: "#e0e0e0", padding: "8px 10px", fontSize: 14,
                   fontFamily: "'JetBrains Mono', monospace", textAlign: "center",
                 }} />
-              <span style={{ color: "#333", fontSize: 10 }}>×</span>
-              <input type="number" inputMode="numeric" placeholder="reps" value={set.reps}
+              <span style={{ color: "#333", fontSize: 10, flexShrink: 0 }}>×</span>
+              <input type="number" inputMode="decimal" step="0.5" placeholder="reps" value={set.reps}
                 onChange={e => updateSet(i, "reps", e.target.value)}
                 style={{
-                  width: 52, background: "#0a0a0a", border: "1px solid #222", borderRadius: 6,
-                  color: "#e0e0e0", padding: "6px 8px", fontSize: 13,
+                  flex: 1, minWidth: 0, background: "#0a0a0a", border: "1px solid #222", borderRadius: 6,
+                  color: "#e0e0e0", padding: "8px 10px", fontSize: 14,
                   fontFamily: "'JetBrains Mono', monospace", textAlign: "center",
                 }} />
               <button onClick={() => toggleDone(i)} style={{
-                width: 32, height: 32, borderRadius: 6, border: "none", cursor: "pointer",
+                width: 36, height: 36, flexShrink: 0, borderRadius: 6, border: "none", cursor: "pointer",
                 background: set.done ? "#4CAF50" : "#1a1a1a",
-                color: set.done ? "#fff" : "#555", fontSize: 14, fontWeight: 700,
+                color: set.done ? "#fff" : "#555", fontSize: 16, fontWeight: 700,
                 display: "flex", alignItems: "center", justifyContent: "center",
               }}>{set.done ? "✓" : "○"}</button>
             </div>
