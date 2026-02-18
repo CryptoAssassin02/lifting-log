@@ -292,8 +292,8 @@ const SESSIONS = {
         time: "10–12 min",
         superset: "Rest-pause on FINAL set: fail → 10-15s → fail → 10-15s → fail",
         exercises: [
-          { id: "F-F5", name: "Close-Grip Lat Pulldown (Supinated V-Bar)", sets: 3, reps: "10–12", rest: "75", tempo: "3-0-1-1", note: "V-bar, palms facing you. Lean back 10–15°. Pull to sternum. Lower lat fibers. RP last set." },
-          { id: "F-F6", name: "Straight-Arm Cable Pulldown", sets: 3, reps: "10–12", rest: "60", tempo: "2-0-1-1", note: "Highest pulley. Straight bar or rope. Arms stay locked. Pure lat isolation. 1s squeeze at bottom. RP last set." },
+          { id: "F-F5", name: "Wide Neutral-Grip Pulldown (Upright, to Clavicle)", sets: 3, reps: "10–12", rest: "75", tempo: "3-0-1-1", note: "Upright torso (max 5° lean). Wide neutral handles. Pull to clavicle line, elbows down and slightly forward. Upper lat emphasis. RP last set." },
+          { id: "F-F6", name: "Close-Grip Lat Pulldown (Supinated V-Bar)", sets: 3, reps: "10–12", rest: "60", tempo: "3-0-1-1", note: "V-bar, palms facing you. Lean back 10–15°. Pull to sternum, sweep past chest toward stomach. Lower lat fibers. RP last set." },
         ],
       },
       {
@@ -305,14 +305,15 @@ const SESSIONS = {
         ],
       },
       {
-        name: "PHASE 5 — REAR DELTS, BICEPS & TRAPS",
+        name: "PHASE 5 — REAR DELTS, TRAPS & BICEPS",
         time: "10–12 min",
-        superset: "SS1: F9+F10 (60s) · SS2: F11+F12 (60s) · Drop set final F12",
+        superset: "SS1: F9+F10 (60s after pair) · TRI-SET: F11→F12→F13 (75s after tri-set) · Drop set final F12",
         exercises: [
           { id: "F-F9", name: "Reverse Machine Fly (2s Squeeze)", sets: 3, reps: "12–15", rest: "0", tempo: "2-0-1-2", note: "Pec deck reversed. Lead with elbows. 2s rear delt squeeze. Don't shrug. SUPERSET w/ F10." },
-          { id: "F-F10", name: "Cable Bayesian Curl", sets: 3, reps: "10–12/side", rest: "60", tempo: "3-0-1-1", note: "Low cable, face away. Arm behind torso. Max long-head stretch. 3s eccentric critical. SUPERSET w/ F9." },
-          { id: "F-F11", name: "Machine Trap Shrug (Neutral, 2s Squeeze)", sets: 3, reps: "10–12", rest: "0", tempo: "1-0-1-2", note: "Shrug up AND back (retract). 2s hold. Upper + mid traps. Load heavy. SUPERSET w/ F12." },
-          { id: "F-F12", name: "Spider Curl (EZ-bar or DB)", sets: 3, reps: "10–12", rest: "60", tempo: "2-0-1-1", note: "Chest on incline bench (45–60°). Arms hang down. Short head emphasis. Drop set 25–30% final round." },
+          { id: "F-F10", name: "Machine Trap Shrug (Neutral, 2s Squeeze)", sets: 3, reps: "10–12", rest: "60", tempo: "1-0-1-2", note: "Shrug up AND back (retract). 2s hold. Upper + mid traps. Load heavy. SUPERSET w/ F9." },
+          { id: "F-F11", name: "Cable Bayesian Curl", sets: 3, reps: "10–12/side", rest: "0", tempo: "3-0-1-1", note: "Low cable, face away. Arm behind torso. Max long-head stretch. 3s eccentric critical. TRI-SET → F12." },
+          { id: "F-F12", name: "Spider Curl (EZ-bar or DB)", sets: 3, reps: "10–12", rest: "0", tempo: "2-0-1-1", note: "Chest on incline bench (45–60°). Arms hang down. Short head emphasis. Drop set 25–30% final round. TRI-SET → F13." },
+          { id: "F-F13", name: "Hammer Curl (Alternating)", sets: 3, reps: "10–12", rest: "75", tempo: "2-0-1-1", note: "Neutral grip. Brachialis + brachioradialis. Least ulnar nerve stress. Finishes tri-set." },
         ],
       },
     ],
@@ -468,27 +469,27 @@ function ExerciseCard({ exercise, logData, onUpdateLog }) {
             }}>
               <span style={{
                 fontSize: 10, fontWeight: 700, fontFamily: "'JetBrains Mono', monospace",
-                color: "#555", flexShrink: 0, width: 18,
+                color: "#555", minWidth: 18,
               }}>S{i + 1}</span>
-              <input type="number" inputMode="decimal" step="0.5" placeholder="lbs" value={set.weight}
+              <input type="number" inputMode="decimal" placeholder="lbs" value={set.weight}
                 onChange={e => updateSet(i, "weight", e.target.value)}
                 style={{
-                  flex: 1, minWidth: 0, background: "#0a0a0a", border: "1px solid #222", borderRadius: 6,
-                  color: "#e0e0e0", padding: "8px 10px", fontSize: 14,
+                  width: 60, background: "#0a0a0a", border: "1px solid #222", borderRadius: 6,
+                  color: "#e0e0e0", padding: "6px 8px", fontSize: 13,
                   fontFamily: "'JetBrains Mono', monospace", textAlign: "center",
                 }} />
-              <span style={{ color: "#333", fontSize: 10, flexShrink: 0 }}>×</span>
-              <input type="number" inputMode="decimal" step="0.5" placeholder="reps" value={set.reps}
+              <span style={{ color: "#333", fontSize: 10 }}>×</span>
+              <input type="number" inputMode="numeric" placeholder="reps" value={set.reps}
                 onChange={e => updateSet(i, "reps", e.target.value)}
                 style={{
-                  flex: 1, minWidth: 0, background: "#0a0a0a", border: "1px solid #222", borderRadius: 6,
-                  color: "#e0e0e0", padding: "8px 10px", fontSize: 14,
+                  width: 52, background: "#0a0a0a", border: "1px solid #222", borderRadius: 6,
+                  color: "#e0e0e0", padding: "6px 8px", fontSize: 13,
                   fontFamily: "'JetBrains Mono', monospace", textAlign: "center",
                 }} />
               <button onClick={() => toggleDone(i)} style={{
-                width: 36, height: 36, flexShrink: 0, borderRadius: 6, border: "none", cursor: "pointer",
+                width: 32, height: 32, borderRadius: 6, border: "none", cursor: "pointer",
                 background: set.done ? "#4CAF50" : "#1a1a1a",
-                color: set.done ? "#fff" : "#555", fontSize: 16, fontWeight: 700,
+                color: set.done ? "#fff" : "#555", fontSize: 14, fontWeight: 700,
                 display: "flex", alignItems: "center", justifyContent: "center",
               }}>{set.done ? "✓" : "○"}</button>
             </div>
@@ -503,12 +504,160 @@ function ExerciseCard({ exercise, logData, onUpdateLog }) {
 }
 
 // ═══════════════════════════════════
+// HISTORY DETAIL VIEW COMPONENT
+// ═══════════════════════════════════
+function HistoryDetail({ entry, onBack }) {
+  const session = SESSIONS[entry.sessionId];
+  const exerciseLogs = entry.exerciseLogs || {};
+
+  return (
+    <div style={{ minHeight: "100%", paddingBottom: 80 }}>
+      {/* Header */}
+      <div style={{
+        position: "sticky", top: 0, zIndex: 100, background: "#0a0a0a",
+        padding: "env(safe-area-inset-top) 16px 10px", borderBottom: "1px solid #1a1a1a",
+      }}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 6 }}>
+          <button onClick={onBack} style={{
+            background: "none", border: "none", color: "#D4AF37", fontSize: 13,
+            fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 700, cursor: "pointer",
+            letterSpacing: 1, padding: "4px 0",
+          }}>← HISTORY</button>
+          <div style={{
+            fontSize: 10, fontWeight: 800, letterSpacing: 4, color: "#D4AF37",
+            fontFamily: "'JetBrains Mono', monospace",
+          }}>{entry.sessionTitle}</div>
+        </div>
+        <div style={{
+          fontSize: 11, color: "#666", fontFamily: "'Barlow Condensed', sans-serif",
+          marginTop: 4, letterSpacing: 0.5,
+        }}>
+          {entry.sessionSubtitle} · {entry.group} · {entry.date} · {entry.time}
+        </div>
+        <div style={{
+          fontSize: 10, color: entry.completedSets === entry.totalSets ? "#4CAF50" : "#D4AF37",
+          fontFamily: "'JetBrains Mono', monospace", marginTop: 4,
+        }}>
+          {entry.completedSets}/{entry.totalSets} SETS COMPLETED
+        </div>
+      </div>
+
+      {/* Exercise logs by phase */}
+      <div style={{ padding: "12px 16px" }}>
+        {session ? session.phases.map((phase, pi) => {
+          const phaseHasData = phase.exercises.some(ex => exerciseLogs[ex.id]);
+          if (!phaseHasData) return null;
+          return (
+            <div key={pi} style={{ marginBottom: 20 }}>
+              <div style={{
+                fontSize: 12, fontWeight: 800, letterSpacing: 2, color: "#D4AF37",
+                fontFamily: "'JetBrains Mono', monospace", marginBottom: 4,
+              }}>{phase.name}</div>
+              <div style={{
+                fontSize: 11, color: "#555", fontFamily: "'JetBrains Mono', monospace", marginBottom: 10,
+              }}>{phase.time}</div>
+              {phase.exercises.map(ex => {
+                const exLog = exerciseLogs[ex.id];
+                if (!exLog) return null;
+                const completedSets = exLog.sets.filter(s => s.done);
+                if (completedSets.length === 0) return null;
+                return (
+                  <div key={ex.id} style={{
+                    background: "#111", border: "1px solid #1a1a1a", borderRadius: 10,
+                    padding: "12px 14px", marginBottom: 8,
+                  }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
+                      <span style={{
+                        fontSize: 9, fontWeight: 800, fontFamily: "'JetBrains Mono', monospace",
+                        color: "#D4AF37", letterSpacing: 1,
+                      }}>{ex.id}</span>
+                      <span style={{
+                        fontSize: 14, fontWeight: 700, fontFamily: "'Barlow Condensed', sans-serif",
+                        color: "#e0e0e0",
+                      }}>{ex.name}</span>
+                    </div>
+                    {exLog.sets.map((set, i) => {
+                      if (!set.done) return null;
+                      return (
+                        <div key={i} style={{
+                          display: "flex", alignItems: "center", gap: 8, marginBottom: 4,
+                        }}>
+                          <span style={{
+                            fontSize: 10, fontWeight: 700, fontFamily: "'JetBrains Mono', monospace",
+                            color: "#555", minWidth: 18,
+                          }}>S{i + 1}</span>
+                          <span style={{
+                            fontSize: 13, fontWeight: 600, fontFamily: "'JetBrains Mono', monospace",
+                            color: "#e0e0e0",
+                          }}>
+                            {set.weight ? `${set.weight} lbs` : "BW"} × {set.reps || "—"} reps
+                          </span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                );
+              })}
+            </div>
+          );
+        }) : (
+          <div style={{ color: "#555", fontSize: 12, fontFamily: "'JetBrains Mono', monospace", textAlign: "center", marginTop: 40 }}>
+            Session data not available (session structure may have changed).
+          </div>
+        )}
+
+        {/* Show raw exercise logs if session structure doesn't match */}
+        {!session && Object.keys(exerciseLogs).length > 0 && (
+          <div style={{ marginTop: 20 }}>
+            {Object.entries(exerciseLogs).map(([exId, exLog]) => {
+              const completedSets = exLog.sets.filter(s => s.done);
+              if (completedSets.length === 0) return null;
+              return (
+                <div key={exId} style={{
+                  background: "#111", border: "1px solid #1a1a1a", borderRadius: 10,
+                  padding: "12px 14px", marginBottom: 8,
+                }}>
+                  <div style={{
+                    fontSize: 12, fontWeight: 700, fontFamily: "'JetBrains Mono', monospace",
+                    color: "#D4AF37", marginBottom: 8,
+                  }}>{exId}</div>
+                  {exLog.sets.map((set, i) => {
+                    if (!set.done) return null;
+                    return (
+                      <div key={i} style={{
+                        display: "flex", alignItems: "center", gap: 8, marginBottom: 4,
+                      }}>
+                        <span style={{
+                          fontSize: 10, fontWeight: 700, fontFamily: "'JetBrains Mono', monospace",
+                          color: "#555", minWidth: 18,
+                        }}>S{i + 1}</span>
+                        <span style={{
+                          fontSize: 13, fontWeight: 600, fontFamily: "'JetBrains Mono', monospace",
+                          color: "#e0e0e0",
+                        }}>
+                          {set.weight ? `${set.weight} lbs` : "BW"} × {set.reps || "—"} reps
+                        </span>
+                      </div>
+                    );
+                  })}
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ═══════════════════════════════════
 // MAIN APP
 // ═══════════════════════════════════
 function App() {
   const [store, setStore] = useState(loadData);
   const [activeSession, setActiveSession] = useState(null);
   const [showHistory, setShowHistory] = useState(false);
+  const [viewingHistoryEntry, setViewingHistoryEntry] = useState(null);
 
   useEffect(() => { saveData(store); }, [store]);
 
@@ -546,6 +695,7 @@ function App() {
       time: new Date().toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" }),
       completedSets,
       totalSets,
+      exerciseLogs: JSON.parse(JSON.stringify(sessionLogs)),
     };
 
     setStore(prev => ({
@@ -555,6 +705,16 @@ function App() {
     }));
     setActiveSession(null);
   };
+
+  // ── HISTORY DETAIL VIEW ──
+  if (viewingHistoryEntry) {
+    return (
+      <HistoryDetail
+        entry={viewingHistoryEntry}
+        onBack={() => setViewingHistoryEntry(null)}
+      />
+    );
+  }
 
   // ── HOME SCREEN ──
   if (!activeSession) {
@@ -635,9 +795,10 @@ function App() {
               }}>▼</div>
             </div>
             {showHistory && history.map(h => (
-              <div key={h.id} style={{
+              <div key={h.id} onClick={() => setViewingHistoryEntry(h)} style={{
                 background: "#111", border: "1px solid #1a1a1a", borderRadius: 8,
                 padding: "10px 14px", marginBottom: 6, display: "flex", justifyContent: "space-between",
+                cursor: "pointer",
               }}>
                 <div>
                   <div style={{
@@ -647,11 +808,13 @@ function App() {
                     fontSize: 10, color: "#555", fontFamily: "'JetBrains Mono', monospace", marginTop: 2,
                   }}>{h.date} · {h.time}</div>
                 </div>
-                <div style={{
-                  fontSize: 12, fontWeight: 700, fontFamily: "'JetBrains Mono', monospace",
-                  color: h.completedSets === h.totalSets ? "#4CAF50" : "#D4AF37",
-                  alignSelf: "center",
-                }}>{h.completedSets}/{h.totalSets}</div>
+                <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                  <div style={{
+                    fontSize: 12, fontWeight: 700, fontFamily: "'JetBrains Mono', monospace",
+                    color: h.completedSets === h.totalSets ? "#4CAF50" : "#D4AF37",
+                  }}>{h.completedSets}/{h.totalSets}</div>
+                  <span style={{ color: "#333", fontSize: 10 }}>›</span>
+                </div>
               </div>
             ))}
           </div>
